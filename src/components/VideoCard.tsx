@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Eye, Clock, TrendingUp, Star } from "lucide-react";
+import { Eye, Clock, TrendingUp, Star, Crown } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Video, formatViewCount } from "@/lib/mock-data";
 
@@ -58,6 +58,11 @@ export function VideoCard({ video, index = 0, size = "default" }: VideoCardProps
 
           {/* Badges */}
           <div className="absolute top-2 left-2 flex gap-1.5">
+            {video.is_premium && (
+              <span className="flex items-center gap-1 px-2 py-0.5 rounded-md gradient-primary text-xs font-semibold text-primary-foreground">
+                <Crown className="w-3 h-3" /> Premium
+              </span>
+            )}
             {video.trending && (
               <span className="flex items-center gap-1 px-2 py-0.5 rounded-md bg-trending/90 text-xs font-semibold text-background">
                 <TrendingUp className="w-3 h-3" /> Trending

@@ -10,6 +10,7 @@ export interface Video {
   duration: string;
   featured: boolean;
   trending: boolean;
+  is_premium: boolean;
   created_at: string;
 }
 

@@ -11,6 +11,7 @@ export type CreateVideoInput = {
   duration: string;
   featured: boolean;
   trending: boolean;
+  is_premium: boolean;
 };
 
 const VIDEO_BUCKET = "video-files";
@@ -28,6 +29,7 @@ type VideoRow = {
   duration: string;
   featured: boolean | null;
   trending: boolean | null;
+  is_premium: boolean | null;
   created_at: string;
 };
 
@@ -44,6 +46,7 @@ function normalizeRow(row: VideoRow): Video {
     duration: row.duration ?? "00:00",
     featured: Boolean(row.featured),
     trending: Boolean(row.trending),
+    is_premium: Boolean(row.is_premium),
     created_at: row.created_at,
   };
 }
@@ -53,7 +56,7 @@ export async function fetchVideos(): Promise<Video[]> {
 
   const { data, error } = await supabase
     .from("videos")
-    .select("id,title,description,thumbnail_url,video_url,category,tags,view_count,duration,featured,trending,created_at")
+    .select("id,title,description,thumbnail_url,video_url,category,tags,view_count,duration,featured,trending,is_premium,created_at")
     .order("created_at", { ascending: false });
 
   if (error) {
@@ -81,12 +84,13 @@ export async function createVideo(input: CreateVideoInput): Promise<Video> {
     duration: input.duration,
     featured: input.featured,
     trending: input.trending,
+    is_premium: input.is_premium,
   };
 
   const { data, error } = await supabase
     .from("videos")
     .insert(payload)
-    .select("id,title,description,thumbnail_url,video_url,category,tags,view_count,duration,featured,trending,created_at")
+    .select("id,title,description,thumbnail_url,video_url,category,tags,view_count,duration,featured,trending,is_premium,created_at")
     .single();
 
   if (error || !data) {

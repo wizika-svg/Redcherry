@@ -2,7 +2,7 @@ import { ChangeEvent, DragEvent, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { motion } from "framer-motion";
-import { Upload as UploadIcon, Film, Image, ChevronLeft, Plus, X, Check } from "lucide-react";
+import { Upload as UploadIcon, Film, Image, ChevronLeft, Plus, X, Check, Crown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { categories } from "@/lib/mock-data";
 import { createVideo, uploadThumbnailFile, uploadVideoFile } from "@/lib/videos-service";
@@ -28,6 +28,7 @@ export default function AdminUploadPage() {
   const [tags, setTags] = useState<string[]>([]);
   const [featured, setFeatured] = useState(false);
   const [trending, setTrending] = useState(false);
+  const [is_premium, setIsPremium] = useState(false);
   const [uploaded, setUploaded] = useState(false);
 
   const createVideoMutation = useMutation({
@@ -48,6 +49,7 @@ export default function AdminUploadPage() {
       setTags([]);
       setFeatured(false);
       setTrending(false);
+      setIsPremium(false);
 
       toast({
         title: "Video published",
@@ -219,6 +221,7 @@ export default function AdminUploadPage() {
         duration: duration.trim() || "00:00",
         featured,
         trending,
+        is_premium,
       });
     } catch (error) {
       toast({
@@ -424,7 +427,7 @@ export default function AdminUploadPage() {
           </div>
 
           {/* Flags */}
-          <div className="flex gap-6">
+          <div className="flex gap-6 flex-wrap">
             <label className="flex items-center gap-2 cursor-pointer">
               <input type="checkbox" checked={featured} onChange={e => setFeatured(e.target.checked)} className="w-4 h-4 rounded border-border accent-primary" />
               <span className="text-sm text-foreground">Featured</span>
@@ -432,6 +435,11 @@ export default function AdminUploadPage() {
             <label className="flex items-center gap-2 cursor-pointer">
               <input type="checkbox" checked={trending} onChange={e => setTrending(e.target.checked)} className="w-4 h-4 rounded border-border accent-primary" />
               <span className="text-sm text-foreground">Trending</span>
+            </label>
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input type="checkbox" checked={is_premium} onChange={e => setIsPremium(e.target.checked)} className="w-4 h-4 rounded border-border accent-primary" />
+              <Crown className="w-4 h-4 text-primary" />
+              <span className="text-sm text-foreground">Premium Content</span>
             </label>
           </div>
 

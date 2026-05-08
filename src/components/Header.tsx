@@ -101,6 +101,19 @@ export function Header() {
             </Link>
           )}
 
+          {/* View Premium Content button for premium users */}
+          {user && isPremium && (
+            <Link to="/premium-content" className="hidden sm:block">
+              <Button 
+                variant="premium" 
+                size="sm" 
+                className="gap-1 border-2 border-primary"
+              >
+                <Crown className="w-4 h-4" /> View Premium
+              </Button>
+            </Link>
+          )}
+
           {/* Premium sign-in for non-logged-in users */}
           {!user && (
             <Link to="/login?redirect=premium" className="hidden sm:block">
@@ -160,9 +173,9 @@ export function Header() {
               )}
               
               {user && isPremium && (
-                <div className="px-3 py-2.5 rounded-lg text-sm font-medium text-primary flex items-center gap-1">
-                  <Crown className="w-4 h-4" /> Premium Member
-                </div>
+                <Link to="/premium-content" onClick={() => setMobileMenu(false)} className="px-3 py-2.5 rounded-lg text-sm font-medium text-primary hover:bg-primary/10">
+                  <Crown className="w-4 h-4 mr-1 inline" /> View Premium
+                </Link>
               )}
               
               {!user && (

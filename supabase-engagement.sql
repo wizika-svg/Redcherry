@@ -93,19 +93,20 @@ $$;
 -- =========================================================
 
 create table if not exists public.videos (
-id text primary key,
-title text not null,
-description text,
-thumbnail_url text,
-video_url text not null,
-category text,
-tags text[] default '{}',
-view_count bigint not null default 0,
-duration text default '00:00',
-featured boolean not null default false,
-trending boolean not null default false,
-created_at timestamptz not null default now(),
-updated_at timestamptz not null default now()
+  id text primary key,
+  title text not null,
+  description text,
+  thumbnail_url text,
+  video_url text not null,
+  category text,
+  tags text[] default '{}',
+  view_count bigint not null default 0,
+  duration text default '00:00',
+  featured boolean not null default false,
+  trending boolean not null default false,
+  is_premium boolean not null default false,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
 );
 
 create index if not exists idx_videos_created_at
@@ -120,13 +121,25 @@ on public.videos(featured);
 create index if not exists idx_videos_trending
 on public.videos(trending);
 
+create index if not exists idx_videos_is_premium
+on public.videos(is_premium);
+
 alter table public.videos enable row level security;
 
 drop policy if exists "videos_select_all" on public.videos;
 create policy "videos_select_all"
 on public.videos
 for select
-using (true);
+using (
+  -- Allow viewing non-premium videos to everyone
+  NOT is_premium OR
+  -- Allow admins to see all videos
+  public.is_admin() OR
+  -- Allow premium users to see premium videos
+  (is_premium AND auth.uid() IN (
+    SELECT user_id FROM public.premium_subscriptions
+  ))
+);
 
 drop policy if exists "videos_insert_admin" on public.videos;
 create policy "videos_insert_admin"
@@ -426,6 +439,31 @@ on public.premium_subscriptions;
 create policy "premium_subs_select_admin"
 on public.premium_subscriptions
 for select
+using (public.is_admin());
+
+drop policy if exists "premium_subs_insert_admin"
+on public.premium_subscriptions;
+
+create policy "premium_subs_insert_admin"
+on public.premium_subscriptions
+for insert
+with check (public.is_admin());
+
+drop policy if exists "premium_subs_update_admin"
+on public.premium_subscriptions;
+
+create policy "premium_subs_update_admin"
+on public.premium_subscriptions
+for update
+using (public.is_admin())
+with check (public.is_admin());
+
+drop policy if exists "premium_subs_delete_admin"
+on public.premium_subscriptions;
+
+create policy "premium_subs_delete_admin"
+on public.premium_subscriptions
+for delete
 using (public.is_admin());
 
 drop trigger if exists trg_premium_subscriptions_updated_at

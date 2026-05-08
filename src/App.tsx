@@ -8,6 +8,7 @@ import WatchPage from "./pages/Watch";
 import SearchPage from "./pages/Search";
 import LoginPage from "./pages/Login";
 import PremiumPage from "./pages/Premium";
+import PremiumContentPage from "./pages/PremiumContent";
 import AdminPage from "./pages/Admin";
 import AdminUploadPage from "./pages/AdminUpload";
 import NotFound from "./pages/NotFound";
@@ -27,6 +28,7 @@ const App = () => (
           <Route path="/search" element={<SearchPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/premium" element={<PremiumPage />} />
+          <Route path="/premium-content" element={<PremiumContentPage />} />
           <Route path="/admin" element={<AdminRoute><AdminPage /></AdminRoute>} />
           <Route path="/admin/videos" element={<AdminRoute><AdminPage /></AdminRoute>} />
           <Route path="/admin/upload" element={<AdminRoute><AdminUploadPage /></AdminRoute>} />
