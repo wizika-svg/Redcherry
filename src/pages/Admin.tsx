@@ -4,12 +4,18 @@ import { Link, useLocation } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   LayoutDashboard, Upload, Film, Tags, Settings, BarChart3, TrendingUp,
-  Eye, Clock, Plus, Trash2, Star, ChevronLeft, Menu, X
+  Eye, Clock, Plus, Trash2, Star, ChevronLeft, Menu, X, Crown, Check
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { formatViewCount } from "@/lib/mock-data";
 import { deleteVideo, deleteVideos, fetchVideos } from "@/lib/videos-service";
 import { toast } from "@/components/ui/use-toast";
+import {
+  fetchPendingPremiumRequests,
+  approvePremiumRequest,
+  rejectPremiumRequest,
+  PremiumUpgradeRequest,
+} from "@/lib/premium-service";
 
 const adminNav = [
   { icon: LayoutDashboard, label: "Dashboard", path: "/admin" },
@@ -17,6 +23,7 @@ const adminNav = [
   { icon: Upload, label: "Upload", path: "/admin/upload" },
   { icon: Tags, label: "Categories", path: "/admin/categories" },
   { icon: BarChart3, label: "Analytics", path: "/admin/analytics" },
+  { icon: Crown, label: "Premium Requests", path: "/admin/premium" },
   { icon: Settings, label: "Settings", path: "/admin/settings" },
 ];
 
@@ -29,6 +36,11 @@ export default function AdminPage() {
   const { data: videos = [], isLoading } = useQuery({
     queryKey: ["videos"],
     queryFn: fetchVideos,
+  });
+
+  const { data: premiumRequests = [], isLoading: isLoadingPremium } = useQuery({
+    queryKey: ["premium-requests"],
+    queryFn: fetchPendingPremiumRequests,
   });
 
   const deleteMutation = useMutation({
@@ -68,6 +80,42 @@ export default function AdminPage() {
     },
   });
 
+  const approvePremiumMutation = useMutation({
+    mutationFn: approvePremiumRequest,
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["premium-requests"] });
+      toast({
+        title: "User approved",
+        description: "Premium access has been granted.",
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Approval failed",
+        description: error instanceof Error ? error.message : "Unable to approve this request.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const rejectPremiumMutation = useMutation({
+    mutationFn: rejectPremiumRequest,
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["premium-requests"] });
+      toast({
+        title: "Request rejected",
+        description: "The premium request has been deleted.",
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Rejection failed",
+        description: error instanceof Error ? error.message : "Unable to reject this request.",
+        variant: "destructive",
+      });
+    },
+  });
+
   useEffect(() => {
     setSelectedIds((prev) => prev.filter((id) => videos.some((video) => video.id === id)));
   }, [videos]);
@@ -98,9 +146,11 @@ export default function AdminPage() {
         ? "Analytics"
         : currentPath === "/admin/videos"
           ? "Videos"
-          : currentPath === "/admin/settings"
-            ? "Settings"
-            : "Dashboard";
+          : currentPath === "/admin/premium"
+            ? "Premium Requests"
+            : currentPath === "/admin/settings"
+              ? "Settings"
+              : "Dashboard";
 
   const pageDescription =
     currentPath === "/admin/categories"
@@ -109,9 +159,11 @@ export default function AdminPage() {
         ? "View ranking from highest views to lowest"
         : currentPath === "/admin/videos"
           ? "Manage your uploaded videos"
-          : currentPath === "/admin/settings"
-            ? "Account and panel settings"
-            : "Manage your content and analytics";
+          : currentPath === "/admin/premium"
+            ? "Review and approve premium upgrade requests"
+            : currentPath === "/admin/settings"
+              ? "Account and panel settings"
+              : "Manage your content and analytics";
 
   const handleDelete = (videoId: string, title: string) => {
     const isConfirmed = window.confirm(`Delete "${title}"? This cannot be undone.`);
@@ -245,6 +297,14 @@ export default function AdminPage() {
             <div className="p-6 rounded-xl bg-card border border-border text-sm text-muted-foreground">
               Loading videos...
             </div>
+          ) : currentPath === "/admin/premium" ? (
+            <PremiumRequestsTable
+              requests={premiumRequests}
+              isLoading={isLoadingPremium}
+              onApprove={(id) => approvePremiumMutation.mutate(id)}
+              onReject={(id) => rejectPremiumMutation.mutate(id)}
+              isProcessing={approvePremiumMutation.isPending || rejectPremiumMutation.isPending}
+            />
           ) : currentPath === "/admin/categories" ? (
             <div className="space-y-5">
               {sortedCategories.length === 0 ? (
@@ -485,6 +545,100 @@ function VideosTable({
             </tbody>
           </table>
         </div>
+      </div>
+    </div>
+  );
+}
+
+function PremiumRequestsTable({
+  requests,
+  isLoading,
+  isProcessing,
+  onApprove,
+  onReject,
+}: {
+  requests: PremiumUpgradeRequest[];
+  isLoading: boolean;
+  isProcessing: boolean;
+  onApprove: (id: string) => void;
+  onReject: (id: string) => void;
+}) {
+  if (isLoading) {
+    return (
+      <div className="p-6 rounded-xl bg-card border border-border text-sm text-muted-foreground">
+        Loading premium requests...
+      </div>
+    );
+  }
+
+  if (requests.length === 0) {
+    return (
+      <div className="p-6 rounded-xl bg-card border border-border text-sm text-muted-foreground text-center">
+        No pending premium upgrade requests.
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-4">
+      <h2 className="text-lg font-display font-semibold text-foreground">
+        Pending Requests ({requests.length})
+      </h2>
+
+      <div className="grid grid-cols-1 gap-4">
+        {requests.map((request) => (
+          <motion.div
+            key={request.id}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="p-4 rounded-lg border border-border bg-card hover:border-primary/30 transition-colors"
+          >
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+              <div className="flex-1 space-y-2">
+                <div className="flex items-center gap-2">
+                  <p className="font-semibold text-foreground">{request.email}</p>
+                  <span className="px-2 py-0.5 rounded-full bg-primary/15 text-primary text-xs font-medium">
+                    {request.premium_plan}
+                  </span>
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  Applied on {new Date(request.created_at).toLocaleDateString()}
+                </p>
+                {request.payment_receipt_url && (
+                  <a
+                    href={request.payment_receipt_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-xs text-primary hover:underline inline-block"
+                  >
+                    View Payment Receipt →
+                  </a>
+                )}
+              </div>
+
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => onReject(request.id)}
+                  disabled={isProcessing}
+                  className="text-destructive hover:text-destructive"
+                >
+                  <Trash2 className="w-4 h-4 mr-1" /> Reject
+                </Button>
+                <Button
+                  variant="premium"
+                  size="sm"
+                  onClick={() => onApprove(request.id)}
+                  disabled={isProcessing}
+                  className="gap-1"
+                >
+                  <Check className="w-4 h-4" /> Approve
+                </Button>
+              </div>
+            </div>
+          </motion.div>
+        ))}
       </div>
     </div>
   );

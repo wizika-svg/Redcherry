@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { Search, Menu, X, LogIn } from "lucide-react";
+import { Search, Menu, X, LogIn, Crown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "@/hooks/use-auth";
@@ -11,7 +11,7 @@ export function Header() {
   const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
   const location = useLocation();
-  const { isAdmin } = useAuth();
+  const { isAdmin, isPremium, user } = useAuth();
 
   const navLinks = [
     { label: "Home", path: "/" },
@@ -88,8 +88,25 @@ export function Header() {
             )}
           </AnimatePresence>
 
-          <Link to="/login">
-            <Button variant="ghost" size="sm" className="hidden sm:flex text-muted-foreground hover:text-foreground">
+          {/* Premium button for non-premium users */}
+          {user && !isPremium && (
+            <Link to="/premium" className="hidden sm:block">
+              <Button variant="premium" size="sm" className="gap-1">
+                <Crown className="w-4 h-4" /> Upgrade
+              </Button>
+            </Link>
+          )}
+
+          {/* Premium badge for premium users */}
+          {user && isPremium && (
+            <div className="hidden sm:flex items-center gap-1 px-3 py-1.5 rounded-lg bg-primary/10 border border-primary/20">
+              <Crown className="w-4 h-4 text-primary" />
+              <span className="text-xs font-semibold text-primary">Premium</span>
+            </div>
+          )}
+
+          <Link to="/login" className={!user ? "hidden sm:block" : "hidden"}>
+            <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground">
               <LogIn className="w-4 h-4 mr-1" /> Sign In
             </Button>
           </Link>
@@ -126,9 +143,21 @@ export function Header() {
                   {link.label}
                 </Link>
               ))}
-              <Link to="/login" onClick={() => setMobileMenu(false)} className="px-3 py-2.5 rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-secondary">
-                Sign In
-              </Link>
+              {user && !isPremium && (
+                <Link to="/premium" onClick={() => setMobileMenu(false)} className="px-3 py-2.5 rounded-lg text-sm font-medium text-primary hover:bg-primary/10">
+                  <Crown className="w-4 h-4 mr-1 inline" /> Upgrade to Premium
+                </Link>
+              )}
+              {user && isPremium && (
+                <div className="px-3 py-2.5 rounded-lg text-sm font-medium text-primary flex items-center gap-1">
+                  <Crown className="w-4 h-4" /> Premium Member
+                </div>
+              )}
+              {!user && (
+                <Link to="/login" onClick={() => setMobileMenu(false)} className="px-3 py-2.5 rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-secondary">
+                  Sign In
+                </Link>
+              )}
               {isAdmin && (
                 <Link to="/admin" onClick={() => setMobileMenu(false)} className="px-3 py-2.5 rounded-lg text-sm font-medium text-primary">
                   Admin Panel

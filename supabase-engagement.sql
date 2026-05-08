@@ -110,4 +110,90 @@ $$;
 
 grant execute on function public.record_video_view(text, text, bigint) to anon, authenticated;
 
+-- Premium upgrade tables
+create table if not exists public.premium_upgrade_requests (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references auth.users(id) on delete cascade unique,
+  email text not null,
+  payment_receipt_url text,
+  premium_plan text not null default 'standard',
+  status text not null default 'pending',
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create index if not exists idx_premium_upgrade_requests_user_id on public.premium_upgrade_requests(user_id);
+create index if not exists idx_premium_upgrade_requests_status on public.premium_upgrade_requests(status);
+
+alter table public.premium_upgrade_requests enable row level security;
+
+drop policy if exists "premium_requests_select_own" on public.premium_upgrade_requests;
+create policy "premium_requests_select_own"
+on public.premium_upgrade_requests
+for select
+using (user_id = auth.uid());
+
+drop policy if exists "premium_requests_select_admin" on public.premium_upgrade_requests;
+create policy "premium_requests_select_admin"
+on public.premium_upgrade_requests
+for select
+using (exists(select 1 from public.profiles where id = auth.uid() and role = 'admin'));
+
+drop policy if exists "premium_requests_insert_own" on public.premium_upgrade_requests;
+create policy "premium_requests_insert_own"
+on public.premium_upgrade_requests
+for insert
+with check (user_id = auth.uid());
+
+drop policy if exists "premium_requests_update_admin" on public.premium_upgrade_requests;
+create policy "premium_requests_update_admin"
+on public.premium_upgrade_requests
+for update
+using (exists(select 1 from public.profiles where id = auth.uid() and role = 'admin'))
+with check (exists(select 1 from public.profiles where id = auth.uid() and role = 'admin'));
+
+drop policy if exists "premium_requests_delete_admin" on public.premium_upgrade_requests;
+create policy "premium_requests_delete_admin"
+on public.premium_upgrade_requests
+for delete
+using (exists(select 1 from public.profiles where id = auth.uid() and role = 'admin'));
+
+drop trigger if exists trg_premium_requests_updated_at on public.premium_upgrade_requests;
+create trigger trg_premium_requests_updated_at
+before update on public.premium_upgrade_requests
+for each row execute function public.set_updated_at();
+
+create table if not exists public.premium_subscriptions (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references auth.users(id) on delete cascade unique,
+  email text not null,
+  premium_plan text not null default 'standard',
+  subscribed_at timestamptz not null default now(),
+  expires_at timestamptz,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create index if not exists idx_premium_subscriptions_user_id on public.premium_subscriptions(user_id);
+create index if not exists idx_premium_subscriptions_expires_at on public.premium_subscriptions(expires_at);
+
+alter table public.premium_subscriptions enable row level security;
+
+drop policy if exists "premium_subs_select_own" on public.premium_subscriptions;
+create policy "premium_subs_select_own"
+on public.premium_subscriptions
+for select
+using (user_id = auth.uid());
+
+drop policy if exists "premium_subs_select_admin" on public.premium_subscriptions;
+create policy "premium_subs_select_admin"
+on public.premium_subscriptions
+for select
+using (exists(select 1 from public.profiles where id = auth.uid() and role = 'admin'));
+
+drop trigger if exists trg_premium_subscriptions_updated_at on public.premium_subscriptions;
+create trigger trg_premium_subscriptions_updated_at
+before update on public.premium_subscriptions
+for each row execute function public.set_updated_at();
+
 commit;

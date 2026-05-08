@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import type { User } from "@supabase/supabase-js";
 import { isSupabaseConfigured, supabase } from "@/lib/supabase";
+import { isUserPremium } from "@/lib/premium-service";
 
 interface AuthState {
   loading: boolean;
   user: User | null;
   isAdmin: boolean;
+  isPremium: boolean;
 }
 
 async function getIsAdmin(userId: string): Promise<boolean> {
@@ -26,11 +28,12 @@ export function useAuth() {
     loading: true,
     user: null,
     isAdmin: false,
+    isPremium: false,
   });
 
   useEffect(() => {
     if (!isSupabaseConfigured || !supabase) {
-      setState({ loading: false, user: null, isAdmin: false });
+      setState({ loading: false, user: null, isAdmin: false, isPremium: false });
       return;
     }
 
@@ -40,13 +43,17 @@ export function useAuth() {
       if (!isMounted) return;
 
       if (!user) {
-        setState({ loading: false, user: null, isAdmin: false });
+        setState({ loading: false, user: null, isAdmin: false, isPremium: false });
         return;
       }
 
-      const isAdmin = await getIsAdmin(user.id);
+      const [isAdmin, isPremium] = await Promise.all([
+        getIsAdmin(user.id),
+        isUserPremium(user.id),
+      ]);
+
       if (!isMounted) return;
-      setState({ loading: false, user, isAdmin });
+      setState({ loading: false, user, isAdmin, isPremium });
     };
 
     const init = async () => {
