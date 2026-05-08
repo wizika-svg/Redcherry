@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Mail, Lock, Eye, EyeOff, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -7,6 +7,8 @@ import { supabase, isSupabaseConfigured } from "@/lib/supabase";
 
 export default function LoginPage() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const redirectTo = searchParams.get("redirect") || "/";
   const [isSignup, setIsSignup] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
@@ -52,7 +54,7 @@ export default function LoginPage() {
         if (error) throw error;
 
         if (data.session) {
-          navigate("/");
+          navigate(redirectTo);
           return;
         }
 
@@ -68,7 +70,7 @@ export default function LoginPage() {
 
         if (error) throw error;
 
-        navigate("/");
+        navigate(redirectTo);
       }
     } catch (error) {
       const message = error instanceof Error ? error.message : "Authentication failed. Please try again.";

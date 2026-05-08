@@ -91,18 +91,27 @@ export function Header() {
           {/* Premium button for non-premium users */}
           {user && !isPremium && (
             <Link to="/premium" className="hidden sm:block">
-              <Button variant="premium" size="sm" className="gap-1">
-                <Crown className="w-4 h-4" /> Upgrade
+              <Button 
+                variant="premium" 
+                size="sm" 
+                className="gap-1 animate-pulse border-2 border-primary"
+              >
+                <Crown className="w-4 h-4" /> Join Premium
               </Button>
             </Link>
           )}
 
-          {/* Premium badge for premium users */}
-          {user && isPremium && (
-            <div className="hidden sm:flex items-center gap-1 px-3 py-1.5 rounded-lg bg-primary/10 border border-primary/20">
-              <Crown className="w-4 h-4 text-primary" />
-              <span className="text-xs font-semibold text-primary">Premium</span>
-            </div>
+          {/* Premium sign-in for non-logged-in users */}
+          {!user && (
+            <Link to="/login?redirect=premium" className="hidden sm:block">
+              <Button 
+                variant="premium" 
+                size="sm" 
+                className="gap-1 animate-pulse border-2 border-primary"
+              >
+                <Crown className="w-4 h-4" /> Premium
+              </Button>
+            </Link>
           )}
 
           <Link to="/login" className={!user ? "hidden sm:block" : "hidden"}>
@@ -143,21 +152,31 @@ export function Header() {
                   {link.label}
                 </Link>
               ))}
+              
               {user && !isPremium && (
                 <Link to="/premium" onClick={() => setMobileMenu(false)} className="px-3 py-2.5 rounded-lg text-sm font-medium text-primary hover:bg-primary/10">
-                  <Crown className="w-4 h-4 mr-1 inline" /> Upgrade to Premium
+                  <Crown className="w-4 h-4 mr-1 inline" /> Join Premium
                 </Link>
               )}
+              
               {user && isPremium && (
                 <div className="px-3 py-2.5 rounded-lg text-sm font-medium text-primary flex items-center gap-1">
                   <Crown className="w-4 h-4" /> Premium Member
                 </div>
               )}
+              
+              {!user && (
+                <Link to="/login?redirect=premium" onClick={() => setMobileMenu(false)} className="px-3 py-2.5 rounded-lg text-sm font-medium text-primary hover:bg-primary/10">
+                  <Crown className="w-4 h-4 mr-1 inline" /> Premium
+                </Link>
+              )}
+              
               {!user && (
                 <Link to="/login" onClick={() => setMobileMenu(false)} className="px-3 py-2.5 rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-secondary">
                   Sign In
                 </Link>
               )}
+              
               {isAdmin && (
                 <Link to="/admin" onClick={() => setMobileMenu(false)} className="px-3 py-2.5 rounded-lg text-sm font-medium text-primary">
                   Admin Panel
