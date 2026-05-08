@@ -109,7 +109,7 @@ export function Header() {
                 size="sm" 
                 className="gap-1 border-2 border-primary"
               >
-                <Crown className="w-4 h-4" /> View Premium
+                <Crown className="w-4 h-4" /> Watch Premium
               </Button>
             </Link>
           )}
@@ -174,7 +174,7 @@ export function Header() {
               
               {user && isPremium && (
                 <Link to="/premium-content" onClick={() => setMobileMenu(false)} className="px-3 py-2.5 rounded-lg text-sm font-medium text-primary hover:bg-primary/10">
-                  <Crown className="w-4 h-4 mr-1 inline" /> View Premium
+                  <Crown className="w-4 h-4 mr-1 inline" /> Watch Premium
                 </Link>
               )}
               

@@ -236,3 +236,78 @@ export async function getUserPremiumSubscription(userId: string): Promise<Premiu
 
   return data as PremiumSubscription | null;
 }
+
+/**
+ * Fetch all users (profiles)
+ */
+export async function fetchAllUsers() {
+  if (!supabase) return [];
+
+  const { data, error } = await supabase
+    .from("profiles")
+    .select("id, email, full_name, avatar_url, created_at")
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error("Failed to fetch users:", error.message);
+    return [];
+  }
+
+  return (data || []) as Array<Record<string, any>>;
+}
+
+/**
+ * Fetch all premium subscriptions
+ */
+export async function fetchAllPremiumSubscriptions() {
+  if (!supabase) return [];
+
+  const { data, error } = await supabase
+    .from("premium_subscriptions")
+    .select("id, user_id, email, premium_plan, subscribed_at, expires_at, created_at")
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error("Failed to fetch premium subscriptions:", error.message);
+    return [];
+  }
+
+  return (data || []) as PremiumSubscription[];
+}
+
+/**
+ * Create or grant a premium subscription for a user (admin)
+ */
+export async function createPremiumSubscription(userId: string, email: string, plan: PremiumPlan = "standard") {
+  if (!supabase) throw new Error("Supabase not configured");
+
+  const { data, error } = await supabase
+    .from("premium_subscriptions")
+    .upsert({ user_id: userId, email, premium_plan: plan }, { onConflict: "user_id" })
+    .select()
+    .single();
+
+  if (error || !data) {
+    throw new Error(error?.message || "Failed to create premium subscription.");
+  }
+
+  return data as PremiumSubscription;
+}
+
+/**
+ * Revoke a user's premium subscription (admin)
+ */
+export async function revokePremiumSubscription(userId: string) {
+  if (!supabase) throw new Error("Supabase not configured");
+
+  const { error } = await supabase
+    .from("premium_subscriptions")
+    .delete()
+    .eq("user_id", userId);
+
+  if (error) {
+    throw new Error(error.message || "Failed to revoke premium subscription.");
+  }
+
+  return true;
+}

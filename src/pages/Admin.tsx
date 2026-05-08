@@ -4,7 +4,7 @@ import { Link, useLocation } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   LayoutDashboard, Upload, Film, Tags, Settings, BarChart3, TrendingUp,
-  Eye, Clock, Plus, Trash2, Star, ChevronLeft, Menu, X, Crown, Check
+  Eye, Clock, Plus, Trash2, Star, ChevronLeft, Menu, X, Crown, Check, Users
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { formatViewCount } from "@/lib/mock-data";
@@ -19,6 +19,7 @@ import {
 
 const adminNav = [
   { icon: LayoutDashboard, label: "Dashboard", path: "/admin" },
+  { icon: Users, label: "Users", path: "/admin/users" },
   { icon: Film, label: "Videos", path: "/admin/videos" },
   { icon: Upload, label: "Upload", path: "/admin/upload" },
   { icon: Tags, label: "Categories", path: "/admin/categories" },
@@ -148,6 +149,8 @@ export default function AdminPage() {
           ? "Videos"
           : currentPath === "/admin/premium"
             ? "Premium Requests"
+            : currentPath === "/admin/users"
+              ? "Users"
             : currentPath === "/admin/settings"
               ? "Settings"
               : "Dashboard";
@@ -161,6 +164,8 @@ export default function AdminPage() {
           ? "Manage your uploaded videos"
           : currentPath === "/admin/premium"
             ? "Review and approve premium upgrade requests"
+            : currentPath === "/admin/users"
+              ? "Overview of all users and premium subscriptions"
             : currentPath === "/admin/settings"
               ? "Account and panel settings"
               : "Manage your content and analytics";
