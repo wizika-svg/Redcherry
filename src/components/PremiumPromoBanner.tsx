@@ -69,7 +69,7 @@ export function PremiumPromoBanner() {
 
               {/* Description */}
               <p className="text-xs text-[rgba(255,255,255,0.6)] leading-relaxed font-medium">
-                Access the <span className="text-[#2DD48C]">rarest and craziest videos</span> on the platform. Exclusive content curated for those who demand the highest quality.
+                Access the <span className="text-[#2DD48C]">rarest and craziest videos</span> on the platform. Exclusive content curated for those who demand the highest quality...
               </p>
 
               {/* Features - Sleek Grid */}
