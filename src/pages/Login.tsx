@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { Link, useNavigate, useSearchParams, useParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Mail, Lock, Eye, EyeOff, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -8,7 +8,11 @@ import { supabase, isSupabaseConfigured } from "@/lib/supabase";
 export default function LoginPage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const redirectTo = searchParams.get("redirect") || "/";
+  const params = useParams();
+  // Support redirect via query `?redirect=` or path `/login/<redirect>`
+  const redirectFromQuery = searchParams.get("redirect");
+  const redirectFromPath = params?.redirect;
+  const redirectTo = decodeURIComponent((redirectFromQuery || redirectFromPath) || "/");
   const [isSignup, setIsSignup] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
