@@ -39,7 +39,7 @@ export function PremiumPromoBanner() {
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={{ opacity: 0, y: -20, scale: 0.95 }}
           transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1] }}
-          className="fixed top-6 left-1/2 transform -translate-x-1/2 z-[100] max-w-sm w-full mx-4"
+          className="fixed top-6 left-1/2 -translate-x-1/2 z-[100] max-w-sm w-screen flex justify-center px-4"
         >
           <div className="relative overflow-hidden p-5 rounded-2xl bg-[#0a0f1a]/80 border border-[rgba(45,212,140,0.2)] shadow-[0_20px_50px_rgba(0,0,0,0.5)] backdrop-blur-xl">
             
