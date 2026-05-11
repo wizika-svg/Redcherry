@@ -75,10 +75,10 @@ const Index = () => {
             <div className="w-6 h-6 rounded-md gradient-primary flex items-center justify-center">
               <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
             </div>
-            <span className="font-display font-bold text-foreground">Vault<span className="text-primary">TV</span></span>
+            <span className="font-display font-bold text-foreground">Eroctichq<span className="text-primary">TV</span></span>
           </div>
           <p className="text-sm text-muted-foreground">Premium content. Unlimited streaming.</p>
-          <p className="text-xs text-muted-foreground/50">© 2026 VaultTV. All rights reserved.</p>
+          <p className="text-xs text-muted-foreground/50">© 2026 EroctichqTV. All rights reserved.</p>
         </div>
       </footer>
     </Layout>

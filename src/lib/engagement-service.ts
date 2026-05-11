@@ -15,7 +15,7 @@ const DEFAULT_ACTIONS: VideoActions = {
 function getViewerKey(userId?: string | null): string {
   if (userId) return userId;
 
-  const storageKey = "vaulttv_viewer_key";
+  const storageKey = "Eroctichqtv_viewer_key";
   const existing = window.localStorage.getItem(storageKey);
   if (existing) return existing;
 

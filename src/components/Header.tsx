@@ -38,7 +38,7 @@ export function Header() {
             <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
           </div>
           <span className="font-display font-bold text-xl text-foreground hidden sm:block">
-            Vault<span className="text-primary">TV</span>
+            Eroctichq<span className="text-primary">TV</span>
           </span>
         </Link>
 

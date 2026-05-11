@@ -110,7 +110,7 @@ export default function LoginPage() {
               <div className="w-4 h-4 bg-[#2DD48C] rounded-sm rotate-45 shadow-[0_0_20px_rgba(45,212,140,0.5)]" />
             </div>
             <span className="font-display font-bold text-5xl tracking-tighter">
-              Vault<span className="text-[#388BFD]">TV</span>
+              Eroctichq<span className="text-[#388BFD]">TV</span>
             </span>
           </Link>
           
@@ -140,7 +140,7 @@ export default function LoginPage() {
                 <div className="w-10 h-10 rounded-xl bg-[rgba(45,212,140,0.1)] border border-[rgba(45,212,140,0.2)] flex items-center justify-center">
                   <div className="w-3 h-3 bg-[#2DD48C] rounded-sm rotate-45" />
                 </div>
-                <span className="font-display font-bold text-2xl text-white">Vault<span className="text-[#388BFD]">TV</span></span>
+                <span className="font-display font-bold text-2xl text-white">Eroctichq<span className="text-[#388BFD]">TV</span></span>
               </Link>
           </div>
 

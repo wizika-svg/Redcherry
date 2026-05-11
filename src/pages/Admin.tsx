@@ -348,7 +348,7 @@ export default function AdminPage() {
             </div>
             <div>
               <span className="font-display font-bold text-[15px] text-[#e8f2ff]">
-                Vault<span className="text-[#2DD48C]">TV</span>
+                Eroctichq<span className="text-[#2DD48C]">TV</span>
               </span>
               <p className="text-[10px] tracking-widest text-[rgba(150,185,255,0.45)] uppercase">
                 Admin Panel

@@ -51,7 +51,7 @@ const PremiumContent = () => {
 
             <div className="space-y-3">
               <p className={labelCls}>Restricted Access</p>
-              <h1 className="font-display text-4xl font-bold text-white tracking-tight">Premium Vault</h1>
+              <h1 className="font-display text-4xl font-bold text-white tracking-tight">Premium Eroctichq</h1>
               <p className="text-muted-foreground text-sm leading-relaxed">
                 Unlock our most exclusive collection of high-bitrate, premium cinematic experiences.
               </p>
@@ -115,7 +115,7 @@ const PremiumContent = () => {
 
             <div className="bg-[rgba(255,255,255,0.02)] border border-[rgba(255,255,255,0.05)] rounded-2xl p-5 space-y-4">
               {[
-                { title: "Elite Content", desc: "Access the hidden master-file vault." },
+                { title: "Elite Content", desc: "Access the hidden master-file Eroctichq." },
                 { title: "Pure Stream", desc: "zero-latency, ad-free industrial hosting." }
               ].map((item, i) => (
                 <div key={i} className="flex items-start gap-4">
@@ -204,7 +204,7 @@ const PremiumContent = () => {
                 <div className="w-2.5 h-2.5 bg-[#388BFD] rounded-sm rotate-45" />
               </div>
               <span className="font-display font-bold text-xl text-white tracking-tighter">
-                Vault<span className="text-[#388BFD]">TV</span>
+                Eroctichq<span className="text-[#388BFD]">TV</span>
               </span>
             </div>
             <p className={labelCls}>Encrypted & Curated Premium Streaming</p>
