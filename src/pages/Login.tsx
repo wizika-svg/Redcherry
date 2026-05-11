@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate, useSearchParams, useParams } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Mail, Lock, Eye, EyeOff, ArrowRight } from "lucide-react";
+import { Mail, Lock, Eye, EyeOff, ArrowRight, ShieldCheck, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { supabase, isSupabaseConfigured } from "@/lib/supabase";
 
@@ -9,13 +9,13 @@ export default function LoginPage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const params = useParams();
-  // Support redirect via query `?redirect=` or path `/login/<redirect>`
+  
   const redirectFromQuery = searchParams.get("redirect");
   const redirectFromPath = params?.redirect;
-  // Normalize redirect to an absolute path to avoid relative navigation
   let rawRedirect = (redirectFromQuery || redirectFromPath) || "/";
   if (!rawRedirect.startsWith("/")) rawRedirect = `/${rawRedirect}`;
   const redirectTo = decodeURIComponent(rawRedirect);
+
   const [isSignup, setIsSignup] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
@@ -87,120 +87,162 @@ export default function LoginPage() {
     }
   };
 
+  // ─── Design Tokens ──────────────────────────────────────────────────────
+  const labelCls = "text-[10px] font-bold text-muted-foreground uppercase tracking-[0.15em]";
+  const inputBg = "bg-[#0a0f1a] border-[rgba(255,255,255,0.05)] focus:border-[rgba(45,212,140,0.4)]";
+
   return (
-    <div className="min-h-screen bg-background flex">
-      {/* Left side - branding */}
-      <div className="hidden lg:flex flex-1 relative overflow-hidden items-center justify-center">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-purple-900/10 to-background" />
-        <div className="absolute top-1/3 left-1/3 w-96 h-96 rounded-full bg-primary/10 blur-[150px]" />
+    <div className="min-h-screen bg-[#06090f] flex text-white font-sans selection:bg-[#2DD48C]/30">
+      {/* Left side - Industrial Branding */}
+      <div className="hidden lg:flex flex-[1.2] relative overflow-hidden items-center justify-center border-r border-[rgba(255,255,255,0.05)] bg-[#080c14]">
+        {/* Subtle grid pattern background */}
+        <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'radial-gradient(#fff 1px, transparent 1px)', backgroundSize: '40px 40px' }} />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-[#388BFD] opacity-[0.04] blur-[140px]" />
+        
         <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.8 }}
-          className="relative z-10 text-center space-y-6 p-12"
+          initial={{ opacity: 0, x: -30 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
+          className="relative z-10 space-y-10 p-20"
         >
-          <Link to="/" className="inline-flex items-center gap-3">
-            <div className="w-12 h-12 rounded-xl gradient-primary flex items-center justify-center">
-              <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+          <Link to="/" className="flex items-center gap-4 group">
+            <div className="w-16 h-16 rounded-2xl bg-[rgba(45,212,140,0.1)] border border-[rgba(45,212,140,0.2)] flex items-center justify-center group-hover:scale-105 transition-transform duration-500">
+              <div className="w-4 h-4 bg-[#2DD48C] rounded-sm rotate-45 shadow-[0_0_20px_rgba(45,212,140,0.5)]" />
             </div>
-            <span className="font-display font-bold text-3xl text-foreground">Vault<span className="text-primary">TV</span></span>
+            <span className="font-display font-bold text-5xl tracking-tighter">
+              Vault<span className="text-[#388BFD]">TV</span>
+            </span>
           </Link>
-          <p className="text-xl text-muted-foreground max-w-sm">Premium content. Unlimited streaming. Join the experience.</p>
+          
+          <div className="space-y-6 max-w-md">
+            <h2 className="text-3xl font-display font-bold leading-tight">
+              Access the most exclusive <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#2DD48C] to-[#388BFD]">data-streams</span> in high definition.
+            </h2>
+            <div className="flex gap-4 items-center opacity-60">
+              <ShieldCheck className="w-5 h-5 text-[#2DD48C]" />
+              <p className="text-sm font-medium tracking-wide uppercase">Industrial Grade Encryption</p>
+            </div>
+          </div>
         </motion.div>
       </div>
 
-      {/* Right side - form */}
-      <div className="flex-1 flex items-center justify-center p-6">
+      {/* Right side - Login Form */}
+      <div className="flex-1 flex items-center justify-center p-8 bg-[#06090f]">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="w-full max-w-md space-y-8"
+          initial={{ opacity: 0, scale: 0.98 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.6 }}
+          className="w-full max-w-sm space-y-10"
         >
-          <div className="lg:hidden flex items-center gap-2 mb-8">
-            <Link to="/" className="inline-flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg gradient-primary flex items-center justify-center">
-                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-              </div>
-              <span className="font-display font-bold text-xl text-foreground">Vault<span className="text-primary">TV</span></span>
-            </Link>
+          {/* Mobile Logo */}
+          <div className="lg:hidden flex justify-center mb-4">
+             <Link to="/" className="inline-flex items-center gap-2">
+                <div className="w-10 h-10 rounded-xl bg-[rgba(45,212,140,0.1)] border border-[rgba(45,212,140,0.2)] flex items-center justify-center">
+                  <div className="w-3 h-3 bg-[#2DD48C] rounded-sm rotate-45" />
+                </div>
+                <span className="font-display font-bold text-2xl text-white">Vault<span className="text-[#388BFD]">TV</span></span>
+              </Link>
           </div>
 
-          <div>
-            <h1 className="text-3xl font-display font-bold text-foreground">
+          <div className="space-y-2">
+            <p className={labelCls}>{isSignup ? "New Node Registration" : "Authentication Required"}</p>
+            <h1 className="text-4xl font-display font-bold text-white tracking-tight leading-none">
               {isSignup ? "Create Account" : "Welcome Back"}
             </h1>
-            <p className="text-muted-foreground mt-2">
-              {isSignup ? "Join the premium streaming experience" : "Sign in to continue watching"}
-            </p>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-2">
-              <label className="text-sm font-medium text-foreground">Email</label>
+              <label className={labelCls}>Terminal Email</label>
               <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                 <input
                   type="email"
                   value={email}
                   onChange={e => setEmail(e.target.value)}
-                  placeholder="you@example.com"
-                  className="w-full h-11 pl-10 pr-4 rounded-lg bg-secondary text-foreground placeholder:text-muted-foreground outline-none border border-border focus:border-primary/50 transition-colors text-sm"
+                  placeholder="name@domain.com"
+                  className={`w-full h-14 pl-12 pr-4 rounded-xl text-white placeholder:text-muted-foreground outline-none border transition-all duration-300 text-sm font-medium ${inputBg}`}
                 />
               </div>
             </div>
 
             <div className="space-y-2">
-              <label className="text-sm font-medium text-foreground">Password</label>
+              <label className={labelCls}>Access Key</label>
               <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                 <input
                   type={showPassword ? "text" : "password"}
                   value={password}
                   onChange={e => setPassword(e.target.value)}
-                  placeholder="••••••••"
-                  className="w-full h-11 pl-10 pr-10 rounded-lg bg-secondary text-foreground placeholder:text-muted-foreground outline-none border border-border focus:border-primary/50 transition-colors text-sm"
+                  placeholder="••••••••••••"
+                  className={`w-full h-14 pl-12 pr-12 rounded-xl text-white placeholder:text-muted-foreground outline-none border transition-all duration-300 text-sm font-medium ${inputBg}`}
                 />
-                <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground">
+                <button 
+                  type="button" 
+                  onClick={() => setShowPassword(!showPassword)} 
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-[#2DD48C] transition-colors"
+                >
                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
               </div>
             </div>
 
-            {/* Age gate */}
-            <label className="flex items-start gap-3 cursor-pointer">
-              <input
-                type="checkbox"
-                checked={ageConfirmed}
-                onChange={e => setAgeConfirmed(e.target.checked)}
-                className="mt-0.5 w-4 h-4 rounded border-border accent-primary"
-              />
-              <span className="text-sm text-muted-foreground">
-                I confirm that I am 18 years of age or older and agree to the Terms of Service
+            {/* Age gate - Sleek styling */}
+            <label className="flex items-start gap-4 p-4 rounded-xl bg-[rgba(255,255,255,0.02)] border border-[rgba(255,255,255,0.05)] cursor-pointer group hover:bg-[rgba(255,255,255,0.04)] transition-all">
+              <div className="relative flex items-center h-5">
+                <input
+                  type="checkbox"
+                  checked={ageConfirmed}
+                  onChange={e => setAgeConfirmed(e.target.checked)}
+                  className="w-5 h-5 rounded border-[rgba(255,255,255,0.2)] bg-[#0a0f1a] accent-[#2DD48C] transition-all cursor-pointer"
+                />
+              </div>
+              <span className="text-[11px] leading-relaxed text-muted-foreground font-medium uppercase tracking-wider">
+                I verify that I am <span className="text-white font-bold">18+</span> and consent to the data processing terms.
               </span>
             </label>
 
             {feedback && (
-              <p className={`text-sm ${feedback.type === "error" ? "text-destructive" : "text-primary"}`}>
+              <motion.div 
+                initial={{ opacity: 0, height: 0 }} 
+                animate={{ opacity: 1, height: 'auto' }}
+                className={`p-3 rounded-lg border text-xs font-bold uppercase tracking-widest text-center ${
+                  feedback.type === "error" 
+                    ? "bg-destructive/10 border-destructive/20 text-destructive" 
+                    : "bg-[#2DD48C]/10 border-[#2DD48C]/20 text-[#2DD48C]"
+                }`}
+              >
                 {feedback.message}
-              </p>
+              </motion.div>
             )}
 
-            <Button
-              variant="premium"
-              className="w-full h-11 gap-2"
+            <button
               disabled={isSubmitting || (isSignup && !ageConfirmed)}
+              className="w-full h-14 flex items-center justify-center gap-3 rounded-xl text-xs font-bold text-[#06090f] uppercase tracking-[0.2em] transition-all hover:opacity-90 active:scale-[0.98] disabled:opacity-30 disabled:cursor-not-allowed group"
+              style={{ background: "linear-gradient(135deg, #2DD48C 0%, #388BFD 100%)" }}
             >
-              {isSubmitting ? "Please wait..." : isSignup ? "Create Account" : "Sign In"} <ArrowRight className="w-4 h-4" />
-            </Button>
+              {isSubmitting ? (
+                <div className="w-5 h-5 border-2 border-[#06090f]/30 border-t-[#06090f] rounded-full animate-spin" />
+              ) : (
+                <>
+                  {isSignup ? "Initialize Account" : "Access Terminal"}
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                </>
+              )}
+            </button>
           </form>
 
-          <p className="text-center text-sm text-muted-foreground">
-            {isSignup ? "Already have an account?" : "Don't have an account?"}{" "}
-            <button onClick={() => setIsSignup(!isSignup)} className="text-primary hover:underline font-medium">
-              {isSignup ? "Sign In" : "Sign Up"}
-            </button>
-          </p>
+          <div className="pt-4 text-center">
+            <p className="text-[11px] text-muted-foreground font-bold uppercase tracking-[0.2em]">
+              {isSignup ? "Already registered?" : "Don't have access yet?"}{" "}
+              <button 
+                onClick={() => setIsSignup(!isSignup)} 
+                className="text-[#2DD48C] hover:text-[#388BFD] transition-colors ml-2"
+              >
+                {isSignup ? "Sign In" : "Register Now"}
+              </button>
+            </p>
+          </div>
         </motion.div>
       </div>
     </div>
