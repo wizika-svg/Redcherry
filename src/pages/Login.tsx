@@ -12,7 +12,10 @@ export default function LoginPage() {
   // Support redirect via query `?redirect=` or path `/login/<redirect>`
   const redirectFromQuery = searchParams.get("redirect");
   const redirectFromPath = params?.redirect;
-  const redirectTo = decodeURIComponent((redirectFromQuery || redirectFromPath) || "/");
+  // Normalize redirect to an absolute path to avoid relative navigation
+  let rawRedirect = (redirectFromQuery || redirectFromPath) || "/";
+  if (!rawRedirect.startsWith("/")) rawRedirect = `/${rawRedirect}`;
+  const redirectTo = decodeURIComponent(rawRedirect);
   const [isSignup, setIsSignup] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
