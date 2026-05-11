@@ -25,8 +25,7 @@ const PremiumContent = () => {
   // ─── Not Logged In Access Screen ──────────────────────────────────────
   if (!user) {
     return (
-      <Layout>
-        <div className="w-full h-screen bg-[#0a0f1a] flex items-center justify-center px-4 relative overflow-hidden">
+      <div className="fixed inset-0 bg-[#0a0f1a] flex items-center justify-center px-4 py-8 overflow-auto z-50">
           {/* Background glow */}
           <div className="absolute inset-0 bg-gradient-to-br from-[#388BFD]/5 via-transparent to-[#2DD48C]/5 pointer-events-none" />
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-[#388BFD] opacity-5 blur-[150px] pointer-events-none" />
@@ -87,15 +86,13 @@ const PremiumContent = () => {
             </div>
           </motion.div>
         </div>
-      </Layout>
     );
   }
 
   // ─── Premium Access Required Screen ──────────────────────────────────
   if (!canAccessPremium) {
     return (
-      <Layout>
-        <div className="w-full h-screen bg-[#0a0f1a] flex items-center justify-center px-4 relative overflow-hidden">
+      <div className="fixed inset-0 bg-[#0a0f1a] flex items-center justify-center px-4 py-8 overflow-auto z-50">
           {/* Background effects */}
           <div className="absolute inset-0 bg-gradient-to-br from-[#2DD48C]/5 via-transparent to-[#388BFD]/5 pointer-events-none" />
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(45,212,140,0.08)_0%,transparent_70%)]" />
@@ -159,7 +156,6 @@ const PremiumContent = () => {
             </button>
           </motion.div>
         </div>
-      </Layout>
     );
   }
 
