@@ -29,7 +29,7 @@ const PremiumContent = () => {
   if (!user) {
     return (
       <Layout>
-        <div className={`${pageBg} flex items-center justify-center px-4 overflow-hidden relative`}>
+        <div className="fixed inset-0 flex items-center justify-center px-4 overflow-hidden bg-[#0a0f1a]">
           {/* Ambient background glow */}
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-[#388BFD] opacity-[0.03] blur-[120px] pointer-events-none" />
           
@@ -86,7 +86,7 @@ const PremiumContent = () => {
   if (!canAccessPremium) {
     return (
       <Layout>
-        <div className={`${pageBg} flex items-center justify-center px-4 relative`}>
+        <div className="fixed inset-0 flex items-center justify-center px-4 bg-[#0a0f1a]">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(45,212,140,0.05)_0%,transparent_70%)]" />
           
           <motion.div
