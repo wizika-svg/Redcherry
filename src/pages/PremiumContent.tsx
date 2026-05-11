@@ -1,4 +1,4 @@
-import { Crown, Lock, Sparkles } from "lucide-react";
+import { Crown, Lock, Sparkles, Zap, ShieldCheck } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -22,47 +22,58 @@ const PremiumContent = () => {
   // Show all premium videos to premium users and admins
   const canAccessPremium = isPremium || isAdmin;
 
+  // ─── Shared Premium Styles ──────────────────────────────────────────────
+  const labelCls = "text-[10px] font-bold text-muted-foreground uppercase tracking-[0.2em]";
+  const pageBg = "min-h-screen bg-[#0a0f1a]";
+
   if (!user) {
     return (
       <Layout>
-        <div className="min-h-screen flex items-center justify-center px-4">
+        <div className={`${pageBg} flex items-center justify-center px-4 overflow-hidden relative`}>
+          {/* Ambient background glow */}
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-[#388BFD] opacity-[0.03] blur-[120px] pointer-events-none" />
+          
           <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="text-center max-w-md space-y-6"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-center max-w-sm w-full space-y-8 relative z-10"
           >
             <div className="flex justify-center">
-              <div className="relative">
-                <div className="w-20 h-20 rounded-full gradient-primary flex items-center justify-center">
-                  <Crown className="w-10 h-10 text-white" />
+              <div className="relative group">
+                <div className="w-24 h-24 rounded-2xl bg-[rgba(56,139,253,0.05)] border border-[rgba(56,139,253,0.15)] flex items-center justify-center transition-all group-hover:border-[rgba(56,139,253,0.3)] shadow-2xl">
+                  <Crown className="w-10 h-10 text-[#388BFD]" />
                 </div>
-                <div className="absolute -top-1 -right-1 w-8 h-8 rounded-full bg-primary/20 border-2 border-primary flex items-center justify-center">
-                  <Lock className="w-4 h-4 text-primary" />
+                <div className="absolute -bottom-2 -right-2 w-10 h-10 rounded-xl bg-[#0a0f1a] border border-[rgba(56,139,253,0.3)] shadow-lg flex items-center justify-center">
+                  <Lock className="w-4 h-4 text-[#388BFD]" />
                 </div>
               </div>
             </div>
 
-            <div className="space-y-2">
-              <h1 className="font-display text-3xl font-bold text-foreground">Premium Content</h1>
-              <p className="text-muted-foreground">Sign in to access exclusive premium videos</p>
+            <div className="space-y-3">
+              <p className={labelCls}>Restricted Access</p>
+              <h1 className="font-display text-4xl font-bold text-white tracking-tight">Premium Vault</h1>
+              <p className="text-muted-foreground text-sm leading-relaxed">
+                Unlock our most exclusive collection of high-bitrate, premium cinematic experiences.
+              </p>
             </div>
 
-            <div className="space-y-3 pt-4">
-              <Button
-                variant="premium"
-                className="w-full gap-2"
+            <div className="space-y-4 pt-4">
+              <button
+                className="w-full flex items-center justify-center gap-2 py-4 rounded-xl text-xs font-bold text-white uppercase tracking-widest transition-all hover:opacity-90 active:scale-[0.98]"
+                style={{ background: "linear-gradient(135deg, #388BFD 0%, #2DD48C 100%)" }}
                 onClick={() => navigate("/login?redirect=premium-content")}
               >
-                <Crown className="w-4 h-4" />
-                Sign In
-              </Button>
-              <p className="text-xs text-muted-foreground">
-                Don't have an account?{" "}
+                <Zap className="w-4 h-4 fill-current" />
+                Sign In to Unlock
+              </button>
+              
+              <p className="text-[11px] text-muted-foreground font-medium">
+                New to the platform?{" "}
                 <button
                   onClick={() => navigate("/login")}
-                  className="text-primary hover:underline font-semibold"
+                  className="text-[#2DD48C] hover:text-[#388BFD] transition-colors font-bold uppercase tracking-wider ml-1"
                 >
-                  Create one
+                  Join the Elite
                 </button>
               </p>
             </div>
@@ -75,59 +86,64 @@ const PremiumContent = () => {
   if (!canAccessPremium) {
     return (
       <Layout>
-        <div className="min-h-screen flex items-center justify-center px-4">
+        <div className={`${pageBg} flex items-center justify-center px-4 relative`}>
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(45,212,140,0.05)_0%,transparent_70%)]" />
+          
           <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
+            initial={{ opacity: 0, scale: 0.98 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="text-center max-w-md space-y-6"
+            className="text-center max-w-md w-full space-y-8 relative z-10 p-8 rounded-3xl bg-[rgba(14,26,46,0.6)] border border-[rgba(45,212,140,0.15)] backdrop-blur-xl shadow-2xl"
           >
             <div className="flex justify-center">
               <div className="relative">
-                <div className="w-20 h-20 rounded-full bg-secondary flex items-center justify-center border-2 border-border">
-                  <Lock className="w-10 h-10 text-muted-foreground" />
+                <div className="w-20 h-20 rounded-full bg-[rgba(45,212,140,0.08)] flex items-center justify-center border border-[rgba(45,212,140,0.2)]">
+                  <Lock className="w-8 h-8 text-[#2DD48C]" />
                 </div>
-                <div className="absolute -top-1 -right-1 w-8 h-8 rounded-full bg-primary border-2 border-background flex items-center justify-center">
-                  <Crown className="w-4 h-4 text-white" />
+                <div className="absolute -top-1 -right-1 w-8 h-8 rounded-lg bg-[#2DD48C] border-4 border-[#0a0f1a] flex items-center justify-center shadow-lg">
+                  <Crown className="w-3.5 h-3.5 text-[#0a0f1a]" />
                 </div>
               </div>
             </div>
 
             <div className="space-y-2">
-              <h1 className="font-display text-3xl font-bold text-foreground">Unlock Premium</h1>
-              <p className="text-muted-foreground">
-                Access the rarest and craziest exclusive videos by upgrading to premium
+              <p className={labelCls}>Upgrade Required</p>
+              <h1 className="font-display text-3xl font-bold text-white tracking-tight">Level Up Your View</h1>
+              <p className="text-muted-foreground text-sm">
+                Access the rarest exclusive videos by joining our premium circle.
               </p>
             </div>
 
-            <div className="bg-primary/5 border border-primary/20 rounded-lg p-4 space-y-3">
-              <div className="flex items-start gap-3">
-                <Sparkles className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
-                <div className="text-left">
-                  <p className="font-semibold text-sm text-foreground">Exclusive Content</p>
-                  <p className="text-xs text-muted-foreground">Access premium videos not available to regular users</p>
+            <div className="bg-[rgba(255,255,255,0.02)] border border-[rgba(255,255,255,0.05)] rounded-2xl p-5 space-y-4">
+              {[
+                { title: "Elite Content", desc: "Access the hidden master-file vault." },
+                { title: "Pure Stream", desc: "zero-latency, ad-free industrial hosting." }
+              ].map((item, i) => (
+                <div key={i} className="flex items-start gap-4">
+                  <div className="w-8 h-8 rounded-lg bg-[rgba(45,212,140,0.1)] flex items-center justify-center shrink-0 border border-[rgba(45,212,140,0.1)]">
+                    <ShieldCheck className="w-4 h-4 text-[#2DD48C]" />
+                  </div>
+                  <div className="text-left">
+                    <p className="font-bold text-[11px] uppercase tracking-widest text-white">{item.title}</p>
+                    <p className="text-[11px] text-muted-foreground">{item.desc}</p>
+                  </div>
                 </div>
-              </div>
-              <div className="flex items-start gap-3">
-                <Sparkles className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
-                <div className="text-left">
-                  <p className="font-semibold text-sm text-foreground">Ad-Free Streaming</p>
-                  <p className="text-xs text-muted-foreground">Watch without interruptions</p>
-                </div>
-              </div>
+              ))}
             </div>
 
-            <div className="space-y-2 pt-4">
-              <Button
-                variant="premium"
-                className="w-full gap-2"
+            <div className="space-y-4 pt-2">
+              <button
+                className="w-full py-4 rounded-xl text-xs font-bold text-[#0a0f1a] uppercase tracking-[0.2em] transition-all hover:brightness-110 active:scale-[0.98]"
+                style={{ background: "linear-gradient(135deg, #2DD48C 0%, #388BFD 100%)" }}
                 onClick={() => navigate("/premium")}
               >
-                <Crown className="w-4 h-4" />
-                Upgrade Now
-              </Button>
-              <p className="text-xs text-muted-foreground">
-                {premiumVideos.length} exclusive {premiumVideos.length === 1 ? "video" : "videos"} waiting
-              </p>
+                Go Premium Now
+              </button>
+              <div className="flex items-center justify-center gap-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#2DD48C] animate-pulse" />
+                <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest">
+                  {premiumVideos.length} Exclusive files available
+                </p>
+              </div>
             </div>
           </motion.div>
         </div>
@@ -137,66 +153,64 @@ const PremiumContent = () => {
 
   return (
     <Layout>
-      {/* Header */}
-      <div className="relative overflow-hidden py-12 px-4">
-        <div className="absolute inset-0 gradient-primary opacity-10 blur-3xl" />
-        <div className="container mx-auto relative z-10">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="space-y-4"
-          >
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-lg gradient-primary flex items-center justify-center">
-                <Crown className="w-6 h-6 text-white" />
+      <div className={`${pageBg} min-h-screen`}>
+        {/* Header - Industrial Hero */}
+        <div className="relative overflow-hidden pt-20 pb-12 px-6">
+          <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-[rgba(56,139,253,0.3)] to-transparent" />
+          <div className="container mx-auto relative z-10">
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              className="flex items-center gap-6"
+            >
+              <div className="w-16 h-16 rounded-2xl bg-[rgba(56,139,253,0.08)] border border-[rgba(56,139,253,0.2)] flex items-center justify-center shadow-[0_0_30px_rgba(56,139,253,0.05)]">
+                <Crown className="w-8 h-8 text-[#388BFD]" />
               </div>
-              <div>
-                <h1 className="font-display text-4xl font-bold text-foreground">Premium Content</h1>
-                <p className="text-muted-foreground">Exclusive videos for premium members</p>
+              <div className="space-y-1">
+                <p className={labelCls}>Verified Member Access</p>
+                <h1 className="font-display text-5xl font-bold text-white tracking-tighter">Premium Archive</h1>
               </div>
-            </div>
-          </motion.div>
-        </div>
-      </div>
-
-      <div className="container mx-auto px-4 space-y-12 py-12">
-        {premiumVideos.length > 0 ? (
-          <VideoSection
-            title={`${premiumVideos.length} Premium ${premiumVideos.length === 1 ? "Video" : "Videos"}`}
-            icon={<Crown className="w-6 h-6 text-primary" />}
-            videos={premiumVideos}
-          />
-        ) : (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="text-center py-12 space-y-4"
-          >
-            <Sparkles className="w-12 h-12 text-muted-foreground mx-auto" />
-            <div>
-              <h2 className="text-xl font-semibold text-foreground mb-2">No Premium Content Yet</h2>
-              <p className="text-muted-foreground">Check back soon for exclusive premium videos</p>
-            </div>
-          </motion.div>
-        )}
-      </div>
-
-      {/* Footer */}
-      <footer className="border-t border-border mt-16 py-12">
-        <div className="container mx-auto px-4 text-center space-y-3">
-          <div className="flex items-center justify-center gap-2">
-            <div className="w-6 h-6 rounded-md gradient-primary flex items-center justify-center">
-              <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M8 5v14l11-7z" />
-              </svg>
-            </div>
-            <span className="font-display font-bold text-foreground">
-              Vault<span className="text-primary">TV</span>
-            </span>
+            </motion.div>
           </div>
-          <p className="text-sm text-muted-foreground">Premium content. Unlimited streaming.</p>
         </div>
-      </footer>
+
+        <div className="container mx-auto px-6 space-y-16 py-12">
+          {premiumVideos.length > 0 ? (
+            <div className="relative">
+              <VideoSection
+                title={`${premiumVideos.length} Exclusive Selections`}
+                icon={<Zap className="w-5 h-5 text-[#2DD48C]" />}
+                videos={premiumVideos}
+              />
+            </div>
+          ) : (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="text-center py-24 rounded-3xl border border-dashed border-[rgba(255,255,255,0.05)] bg-[rgba(255,255,255,0.01)]"
+            >
+              <Sparkles className="w-10 h-10 text-muted-foreground/30 mx-auto mb-4" />
+              <h2 className="text-lg font-bold text-white uppercase tracking-widest">Archive Empty</h2>
+              <p className="text-xs text-muted-foreground mt-2">New premium data-streams are currently being processed.</p>
+            </motion.div>
+          )}
+        </div>
+
+        {/* Footer - Minimalist Branding */}
+        <footer className="border-t border-[rgba(255,255,255,0.05)] mt-24 py-16 bg-[#080c14]">
+          <div className="container mx-auto px-6 text-center space-y-6">
+            <div className="flex items-center justify-center gap-3">
+              <div className="w-8 h-8 rounded-lg bg-[rgba(56,139,253,0.1)] flex items-center justify-center border border-[rgba(56,139,253,0.2)]">
+                <div className="w-2.5 h-2.5 bg-[#388BFD] rounded-sm rotate-45" />
+              </div>
+              <span className="font-display font-bold text-xl text-white tracking-tighter">
+                Vault<span className="text-[#388BFD]">TV</span>
+              </span>
+            </div>
+            <p className={labelCls}>Encrypted & Curated Premium Streaming</p>
+          </div>
+        </footer>
+      </div>
     </Layout>
   );
 };
