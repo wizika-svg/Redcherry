@@ -14,8 +14,8 @@ export type CreateVideoInput = {
   is_premium: boolean;
 };
 
-const VIDEO_BUCKET = "video-files";
-const THUMBNAIL_BUCKET = "thumbnails";
+const VIDEO_BUCKET = "videos";
+const THUMBNAIL_BUCKET = "videos";
 
 type VideoRow = {
   id: string;
