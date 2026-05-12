@@ -57,7 +57,7 @@ const PremiumContent = () => {
                 </h1>
               </div>
               <p className="text-base text-gray-300 leading-relaxed">
-                Access the rarest and craziest videos on the platform. Exclusive content curated for those who demand the highest quality.
+                Access the rarest and craziest videos on the platform. Exclusive content curated for those who demand the highest quality
               </p>
             </div>
 
