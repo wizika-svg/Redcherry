@@ -118,15 +118,19 @@ async function uploadFileToBucket(file: File, bucket: string): Promise<string> {
   const fileName = `${crypto.randomUUID()}-${baseName}${ext ? `.${ext}` : ""}`;
   const filePath = `${new Date().toISOString().slice(0, 10)}/${fileName}`;
 
+  console.log(`[Upload] Uploading to bucket: ${bucket}, path: ${filePath}`);
+
   const { error } = await supabase.storage
     .from(bucket)
     .upload(filePath, file, { upsert: false, contentType: file.type || undefined });
 
   if (error) {
-    throw new Error(error.message);
+    console.error(`[Upload Error] Bucket: ${bucket}, Error: ${error.message}`);
+    throw new Error(`Failed to upload to "${bucket}" bucket: ${error.message}`);
   }
 
   const { data } = supabase.storage.from(bucket).getPublicUrl(filePath);
+  console.log(`[Upload Success] Public URL: ${data.publicUrl}`);
   return data.publicUrl;
 }
 
