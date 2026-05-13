@@ -57,10 +57,28 @@ export async function fetchVideos(): Promise<Video[]> {
   const { data, error } = await supabase
     .from("videos")
     .select("id,title,description,thumbnail_url,video_url,category,tags,view_count,duration,featured,trending,is_premium,created_at")
+    .eq("is_premium", false)
     .order("created_at", { ascending: false });
 
   if (error) {
     console.error("Failed to fetch videos from Supabase:", error.message);
+    return [];
+  }
+
+  return (data as VideoRow[]).map(normalizeRow);
+}
+
+export async function fetchPremiumVideos(): Promise<Video[]> {
+  if (!supabase) return [];
+
+  const { data, error } = await supabase
+    .from("videos")
+    .select("id,title,description,thumbnail_url,video_url,category,tags,view_count,duration,featured,trending,is_premium,created_at")
+    .eq("is_premium", true)
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error("Failed to fetch premium videos:", error.message);
     return [];
   }
 

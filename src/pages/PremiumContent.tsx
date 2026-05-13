@@ -5,19 +5,16 @@ import { motion } from "framer-motion";
 import { Layout } from "@/components/Layout";
 import { VideoSection } from "@/components/VideoSection";
 import { Button } from "@/components/ui/button";
-import { fetchVideos } from "@/lib/videos-service";
+import { fetchPremiumVideos } from "@/lib/videos-service";
 import { useAuth } from "@/hooks/use-auth";
 
 const PremiumContent = () => {
   const navigate = useNavigate();
   const { user, isPremium, isAdmin } = useAuth();
-  const { data: videos = [] } = useQuery({
-    queryKey: ["videos"],
-    queryFn: fetchVideos,
+  const { data: premiumVideos = [] } = useQuery({
+    queryKey: ["premium-videos"],
+    queryFn: fetchPremiumVideos,
   });
-
-  // Filter to only premium videos
-  const premiumVideos = videos.filter(v => v.is_premium);
 
   // Show all premium videos to premium users and admins
   const canAccessPremium = isPremium || isAdmin;
